@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabelionato de Notas e Registro Civil das Pessoas Naturais do Distrito de Mirim | Imbituba/SC</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#080808',
+                        cardBg: '#121212',
+                        cardBorder: '#262626',
+                        gold: {
+                            DEFAULT: '#d4af37',
+                            light: '#f3e5ab',
+                            dark: '#aa8c2c',
+                            500: '#d4af37',
+                            600: '#b8972b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #080808; color: #e5e5e5; }
+        .font-heading { font-family: 'Playfair Display', serif; }
+        .glass-card { background: #121212; border: 1px solid #262626; }
+        .glass-card:hover { border-color: rgba(212, 175, 55, 0.4); }
+        .glow-gold { box-shadow: 0 0 50px -15px rgba(212, 175, 55, 0.15); }
+        .btn-glow { box-shadow: 0 4px 25px rgba(212, 175, 55, 0.3); }
+        .text-gradient { background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa8c2c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-view { display: none; }
+        .page-view.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-[#080808] text-gray-100 antialiased selection:bg-gold selection:text-black">
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#080808]/95 backdrop-blur-md border-b border-[#262626]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPage('home')">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-light via-gold to-gold-dark flex items-center justify-center text-black font-bold text-xl shadow-lg flex-shrink-0 overflow-hidden p-2">
+                    <img src="logo.png" alt="Logo Cartório" class="w-full h-full object-contain filter brightness-0" onerror="this.src='https://placehold.co/48x48/d4af37/000000?text=CM'">
+                </div>
+                <div>
+                    <span class="block font-heading font-bold text-xs sm:text-sm text-white tracking-wide leading-tight">Cartório do Distrito de Mirim</span>
+                    <span class="block text-[10px] text-gold font-semibold uppercase tracking-widest">Imbituba / SC • Nadja Raquel Guimarães</span>
+                </div>
+            </div>
+            
+            <!-- Desktop Nav Links -->
+            <div class="hidden lg:flex items-center space-x-6 text-sm font-medium text-gray-300">
+                <button onclick="switchPage('home')" id="nav-home" class="text-gold font-semibold transition-colors">Início</button>
+                <button onclick="switchPage('rcpn')" id="nav-rcpn" class="hover:text-gold transition-colors">RCPN (Registro Civil)</button>
+                <button onclick="switchPage('tabelionato')" id="nav-tabelionato" class="hover:text-gold transition-colors">Tabelionato de Notas</button>
+                <button onclick="switchPage('sobre')" id="nav-sobre" class="hover:text-gold transition-colors">Sobre o Cartório</button>
+                <button onclick="switchPage('contato')" id="nav-contato" class="hover:text-gold transition-colors">Contato</button>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="switchPage('rcpn'); switchRcpnTab('casamento');" class="hidden sm:inline-flex bg-gradient-to-r from-gold-light via-gold to-gold-dark hover:opacity-95 text-black font-bold px-5 py-2.5 rounded-xl transition-all duration-300 shadow-md text-xs uppercase tracking-wider">
+                    Habilitação Casamento
+                </button>
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-gray-300 hover:text-gold p-2 text-xl">
+                    <i class="fa-solid fa-bars" id="menuIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-[#121212] border-b border-[#262626] px-6 py-6 space-y-3">
+            <button onclick="switchPage('home'); toggleMobileMenu();" class="block w-full text-left py-2 text-sm text-gray-200 hover:text-gold font-medium">Início</button>
+            <button onclick="switchPage('rcpn'); toggleMobileMenu();" class="block w-full text-left py-2 text-sm text-gray-200 hover:text-gold font-medium">RCPN (Registro Civil & Religioso)</button>
+            <button onclick="switchPage('tabelionato'); toggleMobileMenu();" class="block w-full text-left py-2 text-sm text-gray-200 hover:text-gold font-medium">Tabelionato de Notas & Checklists</button>
+            <button onclick="switchPage('sobre'); toggleMobileMenu();" class="block w-full text-left py-2 text-sm text-gray-200 hover:text-gold font-medium">Sobre o Cartório</button>
+            <button onclick="switchPage('contato'); toggleMobileMenu();" class="block w-full text-left py-2 text-sm text-gray-200 hover:text-gold font-medium">Contato & Localização</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER WITH MULTI-PAGE VIEWS -->
+    <main class="pt-24">
+
+        <!-- ================= PAGE 1: HOME ================= -->
+        <section id="page-home" class="page-view active">
+            <div class="relative pt-12 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
+                <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/10 rounded-full blur-[160px] pointer-events-none"></div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="grid lg:grid-cols-12 gap-12 items-center">
+                        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                            <div class="inline-flex items-center space-x-2 bg-[#171717] border border-gold/30 rounded-full px-4 py-1.5">
+                                <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
+                                <span class="text-xs uppercase tracking-wider font-semibold text-gold">Tabelionato de Notas e Registro Civil</span>
+                            </div>
+
+                            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
+                                Segurança Jurídica e Cidadania no <span class="text-gradient">Distrito de Mirim</span>
+                            </h1>
+
+                            <p class="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                                Sob a responsabilidade da Tabeliã e Registradora <strong>Nadja Raquel Guimarães</strong>. Serventia oficial com atendimento especializado em atos notariais, registro civil, casamentos religiosos com efeito civil e checklists documentais na Comarca de Imbituba/SC.
+                            </p>
+
+                            <div class="grid grid-cols-2 gap-4 py-2 max-w-md mx-auto lg:mx-0">
+                                <div class="glass-card p-4 rounded-xl text-center">
+                                    <i class="fa-regular fa-clock text-gold text-xl mb-1"></i>
+                                    <span class="block text-[11px] text-gray-400 uppercase tracking-wider">Atendimento</span>
+                                    <span class="font-bold text-white text-sm">Seg a Sex, 9h às 17h</span>
+                                </div>
+                                <div class="glass-card p-4 rounded-xl text-center">
+                                    <i class="fa-solid fa-location-dot text-gold text-xl mb-1"></i>
+                                    <span class="block text-[11px] text-gray-400 uppercase tracking-wider">Localização</span>
+                                    <span class="font-bold text-white text-sm">Nova Brasília, Imbituba</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                                <button onclick="switchPage('rcpn'); switchRcpnTab('religioso');" class="w-full sm:w-auto bg-gradient-to-r from-gold-light via-gold to-gold-dark hover:opacity-95 text-black font-bold px-8 py-4 rounded-xl text-center transition-all duration-300 btn-glow text-sm uppercase tracking-wider flex items-center justify-center space-x-2">
+                                    <span>CASAMENTO RELIGIOSO C/ EFEITO CIVIL</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                                <button onclick="switchPage('tabelionato')" class="w-full sm:w-auto glass-card hover:border-gold text-white font-bold px-6 py-4 rounded-xl text-center transition-all duration-300 text-sm">
+                                    Checklists e Atos Notariais
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Preview Card -->
+                        <div class="lg:col-span-5">
+                            <div class="glass-card p-8 rounded-3xl glow-gold relative border border-gold/30">
+                                <div class="absolute -top-3 -right-3 bg-gradient-to-r from-gold-light to-gold-dark text-black text-xs font-bold px-3.5 py-1 rounded-full shadow-lg uppercase tracking-wider">
+                                    Comarca de Imbituba
+                                </div>
+                                <h3 class="text-2xl font-heading font-bold text-white mb-2">Áreas de Atuação</h3>
+                                <p class="text-sm text-gray-300 mb-6">Consulte nossos serviços oficiais organizados por especialidade.</p>
+                                <div class="space-y-3">
+                                    <button onclick="switchPage('rcpn')" class="w-full flex items-center justify-between p-4 rounded-xl bg-[#080808] border border-[#262626] hover:border-gold transition-all text-left group">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-baby text-gold text-lg"></i>
+                                            <div>
+                                                <span class="block font-bold text-white text-sm group-hover:text-gold transition-colors">Registro Civil (RCPN)</span>
+                                                <span class="text-xs text-gray-400">Nascimento, Casamento Civil e Religioso</span>
+                                            </div>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right text-gray-500 text-xs"></i>
+                                    </button>
+
+                                    <button onclick="switchPage('rcpn'); switchRcpnTab('religioso');" class="w-full flex items-center justify-between p-4 rounded-xl bg-[#080808] border border-gold/40 hover:border-gold transition-all text-left group">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-church text-gold text-lg"></i>
+                                            <div>
+                                                <span class="block font-bold text-white text-sm group-hover:text-gold transition-colors">Casamento Religioso c/ Efeito Civil</span>
+                                                <span class="text-xs text-gold">Guia Completa e Requisitos da Igreja</span>
+                                            </div>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right text-gold text-xs"></i>
+                                    </button>
+
+                                    <button onclick="switchPage('tabelionato')" class="w-full flex items-center justify-between p-4 rounded-xl bg-[#080808] border border-[#262626] hover:border-gold transition-all text-left group">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-pen-nib text-gold text-lg"></i>
+                                            <div>
+                                                <span class="block font-bold text-white text-sm group-hover:text-gold transition-colors">Tabelionato & Checklists</span>
+                                                <span class="text-xs text-gray-400">Procurações, Assinante a Rogo, PJ, e-Notariado</span>
+                                            </div>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right text-gray-500 text-xs"></i>
+                                    </button>
+
+                                    <button onclick="switchPage('contato')" class="w-full py-3.5 px-4 bg-gradient-to-r from-gold-light via-gold to-gold-dark text-black font-bold rounded-xl text-center shadow-lg hover:opacity-95 transition-all text-sm mt-2 uppercase tracking-wider">
+                                        Atendimento e WhatsApp
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bairros Atendidos -->
+            <div class="bg-[#0b0b0b] border-y border-[#262626] py-12">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-8">
+                        <span class="text-gold uppercase tracking-widest text-xs font-bold block mb-1">Jurisdição da Serventia</span>
+                        <h3 class="text-xl font-heading font-bold text-white">Bairros Atendidos pelo Distrito de Mirim</h3>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 text-center">
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Nova Brasília</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Mirim</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Morro do Mirim</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Arroio do Rosa</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Vale das Pedras</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Campestre</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Sambaqui</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Arroio Alto / Arroio</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Ibiraquera / Rosa</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Araçatuba</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Campo Duna</div>
+                        <div class="glass-card p-3 rounded-xl text-xs text-gray-300">Penha / Imbituba</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: RCPN ================= -->
+        <section id="page-rcpn" class="page-view py-16 lg:py-24">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                    <span class="text-gold uppercase tracking-widest text-xs font-bold block">Ofício de Registro Civil das Pessoas Naturais</span>
+                    <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white">Atos do Registro Civil & Casamento Religioso</h2>
+                    <p class="text-gray-400 text-sm sm:text-base">Consulte abaixo todos os atos, regras, prazos, Habilitação de Casamento Civil e a Guia Oficial de Casamento Religioso com Efeito Civil.</p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex flex-wrap justify-center gap-2 mb-10">
+                    <button onclick="switchRcpnTab('casamento')" id="rtab-casamento" class="px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider bg-gold text-black transition-all">Casamento Civil</button>
+                    <button onclick="switchRcpnTab('religioso')" id="rtab-religioso" class="px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider glass-card text-gold border border-gold/40 hover:text-white transition-all">Casamento Religioso c/ Efeito Civil</button>
+                    <button onclick="switchRcpnTab('nascimento')" id="rtab-nascimento" class="px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider glass-card text-gray-300 hover:text-white transition-all">Nascimento</button>
+                    <button onclick="switchRcpnTab('obito')" id="rtab-obito" class="px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider glass-card text-gray-300 hover:text-white transition-all">Óbito & Certidões</button>
+                    <button onclick="switchRcpnTab('formulario')" id="rtab-formulario" class="px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider bg-[#1d1d1d] border border-gold/40 text-gold transition-all">Formulário Online</button>
+                </div>
+
+                <!-- TAB: CASAMENTO -->
+                <div id="rcpn-content-casamento" class="rcpn-tab-pane space-y-10">
+                    <!-- Fluxo -->
+                    <div class="glass-card p-8 rounded-3xl border border-gold/30 glow-gold">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-gold/15 text-gold flex items-center justify-center font-bold text-xl">
+                                <i class="fa-solid fa-ring"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-heading font-bold text-white">1. Como Funciona o Processo de Habilitação</h3>
+                                <p class="text-xs text-gray-400">Fluxo completo do pedido até a celebração</p>
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                            <div class="bg-[#080808] p-4 rounded-2xl border border-[#262626] relative">
+                                <span class="absolute top-2 right-3 text-gold/30 font-extrabold text-lg">01</span>
+                                <h4 class="font-bold text-white text-sm mb-1">Peça o Formulário</h4>
+                                <p class="text-xs text-gray-400">Solicite no cartório ou preencha online.</p>
+                            </div>
+                            <div class="bg-[#080808] p-4 rounded-2xl border border-[#262626] relative">
+                                <span class="absolute top-2 right-3 text-gold/30 font-extrabold text-lg">02</span>
+                                <h4 class="font-bold text-white text-sm mb-1">Reúna Documentos</h4>
+                                <p class="text-xs text-gray-400">Preencha com letra legível e junte toda a documentação.</p>
+                            </div>
+                            <div class="bg-[#080808] p-4 rounded-2xl border border-[#262626] relative">
+                                <span class="absolute top-2 right-3 text-gold/30 font-extrabold text-lg">03</span>
+                                <h4 class="font-bold text-white text-sm mb-1">Entregue para Análise</h4>
+                                <p class="text-xs text-gray-400">Equipe faz a conferência prévia de tudo.</p>
+                            </div>
+                            <div class="bg-[#080808] p-4 rounded-2xl border border-[#262626] relative">
+                                <span class="absolute top-2 right-3 text-gold/30 font-extrabold text-lg">04</span>
+                                <h4 class="font-bold text-white text-sm mb-1">Compareça com Testemunhas</h4>
+                                <p class="text-xs text-gray-400">Noivos comparecem com 2 testemunhas (9h-11h ou 14h-16h).</p>
+                            </div>
+                            <div class="bg-[#080808] p-4 rounded-2xl border border-[#262626] relative">
+                                <span class="absolute top-2 right-3 text-gold/30 font-extrabold text-lg">05</span>
+                                <h4 class="font-bold text-white text-sm mb-1">Confirme a Data</h4>
+                                <p class="text-xs text-gray-400">Habilitação concluída e data confirmada.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formas de Celebração -->
+                    <div class="glass-card p-8 rounded-3xl space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-heading font-bold text-white">2. Formas de Celebração do Casamento</h3>
+                            <button onclick="switchRcpnTab('religioso')" class="text-xs text-gold hover:underline font-bold flex items-center space-x-1">
+                                <span>Ver Guia Completa de Religioso com Efeito Civil</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-[#080808] p-5 rounded-2xl border border-[#262626] space-y-2">
+                                <div class="text-gold font-bold text-sm"><i class="fa-solid fa-building-columns mr-1"></i> No Cartório</div>
+                                <p class="text-xs text-gray-300">Na própria sede da serventia, em dia e horário agendados.</p>
+                            </div>
+                            <div class="bg-[#080808] p-5 rounded-2xl border border-[#262626] space-y-2">
+                                <div class="text-gold font-bold text-sm"><i class="fa-solid fa-map-location-dot mr-1"></i> Externo</div>
+                                <p class="text-xs text-gray-300">Fora do cartório, no local escolhido pelo casal (sujeito a verificação).</p>
+                            </div>
+                            <div class="bg-[#080808] p-5 rounded-2xl border border-gold/40 space-y-2 cursor-pointer hover:border-gold transition-all" onclick="switchRcpnTab('religioso')">
+                                <div class="text-gold font-bold text-sm"><i class="fa-solid fa-church mr-1"></i> Religioso ↗</div>
+                                <p class="text-xs text-gray-300">Religioso com efeito civil (ver requisitos e termo especial).</p>
+                            </div>
+                            <div class="bg-[#080808] p-5 rounded-2xl border border-[#262626] space-y-2">
+                                <div class="text-gold font-bold text-sm"><i class="fa-solid fa-heart-circle-check mr-1"></i> Conversão</div>
+                                <p class="text-xs text-gray-300">Conversão de união estável em casamento civil.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regimes de Bens -->
+                    <div class="glass-card p-8 rounded-3xl space-y-6">
+                        <h3 class="text-xl font-heading font-bold text-white">3. Regimes de Bens (Código Civil)</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-white text-sm">Comunhão Parcial de Bens</h4>
+                                    <span class="text-[10px] bg-green-900/40 text-green-400 px-2 py-0.5 rounded font-semibold">DISPENSA PACTO</span>
+                                </div>
+                                <p class="text-xs text-gray-400 leading-relaxed">Regime legal padrão. Comunicam-se os bens adquiridos onerosamente após o casamento. Bens anteriores continuam particulares (Art. 1.658).</p>
+                            </div>
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-white text-sm">Separação de Bens</h4>
+                                    <span class="text-[10px] bg-amber-900/40 text-amber-400 px-2 py-0.5 rounded font-semibold">EXIGE PACTO</span>
+                                </div>
+                                <p class="text-xs text-gray-400 leading-relaxed">Cada cônjuge conserva a administração exclusiva de seus bens. Requer Escritura de Pacto Antenupcial (Art. 1.687).</p>
+                            </div>
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-white text-sm">Comunhão Universal de Bens</h4>
+                                    <span class="text-[10px] bg-amber-900/40 text-amber-400 px-2 py-0.5 rounded font-semibold">EXIGE PACTO</span>
+                                </div>
+                                <p class="text-xs text-gray-400 leading-relaxed">Tudo se junta: comunicam-se bens presentes, futuros e dívidas. Requer Pacto Antenupcial (Art. 1.667).</p>
+                            </div>
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-white text-sm">Participação Final nos Aquestos</h4>
+                                    <span class="text-[10px] bg-amber-900/40 text-amber-400 px-2 py-0.5 rounded font-semibold">EXIGE PACTO</span>
+                                </div>
+                                <p class="text-xs text-gray-400 leading-relaxed">Regime misto. Na dissolução, cada cônjuge tem direito à metade dos aquestos adquiridos onerosamente (Art. 1.672).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documentos -->
+                    <div class="glass-card p-8 rounded-3xl space-y-6">
+                        <h3 class="text-xl font-heading font-bold text-white">4. Documentos dos Noivos & Prazos</h3>
+                        <div class="bg-[#080808] p-6 rounded-2xl border border-gold/20 space-y-4">
+                            <div class="flex items-center space-x-3 text-gold">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span class="font-bold text-sm">Atenção ao Prazo: Certidões com validade máxima de 90 DIAS</span>
+                            </div>
+                            <ul class="space-y-3 text-xs sm:text-sm text-gray-300">
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-check text-gold mt-1"></i>
+                                    <span><strong>Identificação:</strong> RG ou CNH e CPF de cada noivo.</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-check text-gold mt-1"></i>
+                                    <span><strong>Comprovante de Residência:</strong> Atual (máximo 90 dias). Se de terceiros, apresentar contrato de locação ou declaração com firma reconhecida.</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-check text-gold mt-1"></i>
+                                    <span><strong>Solteiros:</strong> Certidão de Nascimento atualizada (máx. 90 dias).</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-check text-gold mt-1"></i>
+                                    <span><strong>Divorciados:</strong> Certidão de Casamento com averbação do divórcio e comprovação de partilha + Nascimento.</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-check text-gold mt-1"></i>
+                                    <span><strong>Viúvos:</strong> Certidão de Casamento anterior com anotação do óbito e inventário/partilha + Nascimento.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Testemunhas -->
+                    <div class="glass-card p-8 rounded-3xl space-y-4">
+                        <h3 class="text-xl font-heading font-bold text-white">5. Documentos das Testemunhas</h3>
+                        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                            São necessárias <strong>2 (duas) testemunhas</strong> maiores de 18 anos, parentes ou não, que conheçam os noivos e atestem não haver impedimento. Cada testemunha deve apresentar RG ou CNH e CPF.
+                        </p>
+                    </div>
+
+                    <div class="text-center pt-4">
+                        <button onclick="switchRcpnTab('formulario')" class="bg-gradient-to-r from-gold-light via-gold to-gold-dark hover:opacity-95 text-black font-bold px-8 py-4 rounded-xl transition-all duration-300 btn-glow text-sm uppercase tracking-wider">
+                            Preencher Formulário de Habilitação de Casamento
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TAB: RELIGIOSO COM EFEITO CIVIL -->
+                <div id="rcpn-content-religioso" class="rcpn-tab-pane hidden space-y-8">
+                    <div class="glass-card p-8 sm:p-10 rounded-3xl border border-gold/30 glow-gold space-y-8 bg-[#121212]">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#262626] pb-6">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gold/15 text-gold flex items-center justify-center font-bold text-2xl flex-shrink-0">
+                                    <i class="fa-solid fa-church"></i>
+                                </div>
+                                <div>
+                                    <span class="text-gold uppercase tracking-widest text-[11px] font-bold block">Ofício de Registro Civil das Pessoas Naturais</span>
+                                    <h3 class="text-2xl font-heading font-bold text-white">Guia Oficial: Casamento Religioso com Efeito Civil</h3>
+                                </div>
+                            </div>
+                            <button onclick="window.print()" class="glass-card hover:border-gold text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-print text-gold"></i>
+                                <span>Imprimir Guia Oficial</span>
+                            </button>
+                        </div>
+
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            O casamento religioso com efeito civil é celebrado perante uma autoridade religiosa e, depois de registrado no Registro Civil, produz os mesmos efeitos jurídicos do casamento civil. Para isso, os noivos devem realizar previamente a habilitação, levar os documentos fornecidos pelo cartório à cerimônia e devolver o termo para registro.
+                        </p>
+
+                        <div class="bg-[#181818] border-l-4 border-gold p-4 rounded-r-xl text-xs sm:text-sm text-gray-300 space-y-1">
+                            <strong class="text-gold font-bold">Atenção essencial:</strong>
+                            <p>Avise à igreja, templo ou culto religioso que a cerimônia será realizada <strong>com efeito civil</strong>. Antes de comparecer ao cartório, confirme quem será o(a) celebrante e providencie a documentação da entidade religiosa e da autoridade que celebrará o matrimônio.</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-[#080808] p-5 rounded-2xl border border-[#262626] space-y-2">
+                                <span class="text-[10px] text-gold font-bold uppercase tracking-wider">1. Habilitação</span>
+                                <h4 class="font-bold text-white text-sm">O procedimento começa no cartório</h4>
+                                <p class="text-xs text-gray-400">Os noivos e duas testemunhas apresentam os documentos e formalizam o pedido de habilitação.</p>
+                            </div>
+                            <div class="bg-[#080808] p-5 rounded-2xl border border-[#262626] space-y-2">
+                                <span class="text-[10px] text-gold font-bold uppercase tracking-wider">2. Cerimônia</span>
+                                <h4 class="font-bold text-white text-sm">O casamento ocorre na entidade religiosa</h4>
+                                <p class="text-xs text-gray-400">O termo expedido pelo cartório deve ser preenchido sem rasuras e assinado corretamente.</p>
+                            </div>
+                            <div class="bg-[#080808] p-5 rounded-2xl border border-[#262626] space-y-2">
+                                <span class="text-[10px] text-gold font-bold uppercase tracking-wider">3. Registro</span>
+                                <h4 class="font-bold text-white text-sm">O termo retorna ao mesmo cartório</h4>
+                                <p class="text-xs text-gray-400">Após a conferência e o registro definitivo, será emitida a certidão de casamento civil.</p>
+                            </div>
+                        </div>
+
+                        <!-- Passo a passo detalhado -->
+                        <div class="space-y-4 pt-4">
+                            <h4 class="text-lg font-heading font-bold text-white border-b border-[#262626] pb-2">Passo a Passo da Cerimônia ao Registro</h4>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div class="bg-[#080808] p-4 rounded-xl border border-[#262626] flex items-start space-x-3">
+                                    <div class="w-7 h-7 rounded-full bg-gold text-black font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
+                                    <div class="space-y-1">
+                                        <h5 class="font-bold text-white text-sm">Confirme com a Instituição Religiosa</h5>
+                                        <p class="text-xs text-gray-400">Informe o desejo do efeito civil, confirme a data, o local e o(a) celebrante autorizado(a).</p>
+                                    </div>
+                                </div>
+                                <div class="bg-[#080808] p-4 rounded-xl border border-[#262626] flex items-start space-x-3">
+                                    <div class="w-7 h-7 rounded-full bg-gold text-black font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+                                    <div class="space-y-1">
+                                        <h5 class="font-bold text-white text-sm">Separe Documentos dos Noivos</h5>
+                                        <p class="text-xs text-gray-400">Providencie documentos de identidade, comprovante de residência e certidões atualizadas (prazo máx. 90 dias).</p>
+                                    </div>
+                                </div>
+                                <div class="bg-[#080808] p-4 rounded-xl border border-[#262626] flex items-start space-x-3">
+                                    <div class="w-7 h-7 rounded-full bg-gold text-black font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+                                    <div class="space-y-1">
+                                        <h5 class="font-bold text-white text-sm">Declaração da Igreja & Celebrante</h5>
+                                        <p class="text-xs text-gray-400">Apresente declaração da igreja (com firma reconhecida do representante) e cópia autenticada do RG do(a) celebrante.</p>
+                                    </div>
+                                </div>
+                                <div class="bg-[#080808] p-4 rounded-xl border border-[#262626] flex items-start space-x-3">
+                                    <div class="w-7 h-7 rounded-full bg-gold text-black font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">4</div>
+                                    <div class="space-y-1">
+                                        <h5 class="font-bold text-white text-sm">Devolução do Termo ao Cartório</h5>
+                                        <p class="text-xs text-gray-400">Após a cerimônia religiosa, devolva o termo original devidamente assinado para o registro definitivo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Requisitos da Declaração da Igreja -->
+                        <div class="bg-[#080808] p-6 rounded-2xl border border-gold/30 space-y-4">
+                            <h4 class="font-bold text-gold text-sm uppercase tracking-wider"><i class="fa-solid fa-file-lines mr-2"></i> O que deve constar na Declaração da Instituição Religiosa</h4>
+                            <ul class="space-y-2 text-xs sm:text-sm text-gray-300">
+                                <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span><strong>Identificação da entidade:</strong> Nome, CNPJ, endereço completo e dados de contato;</span></li>
+                                <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span><strong>Identificação do representante:</strong> Nome completo, cargo, documento de identidade e CPF;</span></li>
+                                <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span><strong>Qualificação do(a) celebrante:</strong> Nome, nacionalidade, estado civil, profissão/função religiosa, RG, CPF e endereço;</span></li>
+                                <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span><strong>Autorização expressa:</strong> Declaração de que o(a) celebrante está autorizado(a) a realizar a cerimônia com efeito civil para os noivos;</span></li>
+                                <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span><strong>Reconhecimento de Firma:</strong> A assinatura do representante da igreja no documento deve estar com firma reconhecida.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: NASCIMENTO -->
+                <div id="rcpn-content-nascimento" class="rcpn-tab-pane hidden space-y-8">
+                    <div class="glass-card p-8 rounded-3xl space-y-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-xl bg-gold/15 text-gold flex items-center justify-center font-bold text-xl">
+                                <i class="fa-solid fa-baby"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-heading font-bold text-white">Registro de Nascimento</h3>
+                                <p class="text-xs text-gray-400">O primeiro passo fundamental para a cidadania</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            O registro de nascimento é gratuito por lei e deve ser feito no cartório do lugar de nascimento ou da residência dos pais.
+                        </p>
+                        <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-3">
+                            <h4 class="font-bold text-gold text-sm">Documentos Necessários:</h4>
+                            <ul class="space-y-2 text-xs text-gray-300">
+                                <li>• Declaração de Nascido Vivo (DNV) fornecida pelo hospital.</li>
+                                <li class="text-white">• Cédula de identidade (RG ou CNH) e CPF dos pais.</li>
+                                <li>• Certidão de Casamento dos pais (se casados) ou certidão de nascimento/divórcio.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: ÓBITO -->
+                <div id="rcpn-content-obito" class="rcpn-tab-pane hidden space-y-8">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="glass-card p-8 rounded-3xl space-y-4">
+                            <h3 class="text-xl font-heading font-bold text-white flex items-center space-x-3">
+                                <i class="fa-solid fa-file-shield text-gold"></i>
+                                <span>Registro de Óbito</span>
+                            </h3>
+                            <p class="text-xs text-gray-300 leading-relaxed">
+                                Lavrado mediante a Declaração de Óbito (DO) emitida pelo médico e documentos de identificação do falecido e do declarante.
+                            </p>
+                        </div>
+                        <div class="glass-card p-8 rounded-3xl space-y-4">
+                            <h3 class="text-xl font-heading font-bold text-white flex items-center space-x-3">
+                                <i class="fa-solid fa-copy text-gold"></i>
+                                <span>Segundas Vias de Certidões</span>
+                            </h3>
+                            <p class="text-xs text-gray-300 leading-relaxed">
+                                Emissão rápida de segundas vias atualizadas de nascimento, casamento e óbito para inventários, cidadania e trâmites legais.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: FORMULÁRIO -->
+                <div id="rcpn-content-formulario" class="rcpn-tab-pane hidden space-y-8">
+                    <div class="glass-card p-8 sm:p-10 rounded-3xl border border-gold/30 glow-gold relative">
+                        <div class="absolute -top-3 -right-3 bg-gradient-to-r from-gold-light to-gold-dark text-black text-xs font-bold px-3.5 py-1 rounded-full shadow-lg uppercase tracking-wider">
+                            Guia Oficial de Entrada
+                        </div>
+
+                        <div class="mb-8 space-y-2">
+                            <span class="text-gold uppercase tracking-widest text-xs font-bold block">Anexo de Habilitação de Casamento Civil</span>
+                            <h3 class="text-2xl font-heading font-bold text-white">Formulário Digital dos Noivos</h3>
+                            <p class="text-sm text-gray-300">Preencha com atenção para agilizar a conferência dos dados em nossa serventia.</p>
+                        </div>
+
+                        <form id="marriageForm" class="space-y-8" onsubmit="handleMarriageSubmission(event)">
+                            <div class="space-y-4 bg-[#080808] p-6 rounded-2xl border border-[#262626]">
+                                <h4 class="font-bold text-white text-sm uppercase tracking-wider text-gold">1. Forma de Celebração e Regime de Bens</h4>
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Modalidade da Cerimônia</label>
+                                        <select id="tipoCeleb" required class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                            <option value="No Cartório">No Cartório (Sede)</option>
+                                            <option value="Externo">Externo (Local escolhido pelo casal)</option>
+                                            <option value="Religioso com Efeito Civil">Religioso com Efeito Civil</option>
+                                            <option value="Conversão de União Estável">Conversão de União Estável</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Regime de Bens</label>
+                                        <select id="regimeBens" required class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                            <option value="Comunhão Parcial de Bens">Comunhão Parcial de Bens (Regime Legal)</option>
+                                            <option value="Separação de Bens">Separação de Bens (Exige Pacto)</option>
+                                            <option value="Comunhão Universal de Bens">Comunhão Universal de Bens (Exige Pacto)</option>
+                                            <option value="Participação Final nos Aquestos">Participação Final nos Aquestos (Exige Pacto)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4 bg-[#080808] p-6 rounded-2xl border border-[#262626]">
+                                <h4 class="font-bold text-white text-sm uppercase tracking-wider text-gold">2. Dados do(a) Primeiro(a) Cônjuge</h4>
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Nome Completo</label>
+                                        <input type="text" id="c1Name" required placeholder="Nome completo" class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Estado Civil Atual</label>
+                                        <select id="c1Estado" class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                            <option value="Solteiro(a)">Solteiro(a)</option>
+                                            <option value="Divorciado(a)">Divorciado(a)</option>
+                                            <option value="Viúvo(a)">Viúvo(a)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Profissão & Naturalidade</label>
+                                        <input type="text" id="c1ProfNat" required placeholder="Profissão / Cidade - UF" class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Nome que Passará a Assinar</label>
+                                        <input type="text" id="c1Sobrenome" required placeholder="Ex: Silva Santos" class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4 bg-[#080808] p-6 rounded-2xl border border-[#262626]">
+                                <h4 class="font-bold text-white text-sm uppercase tracking-wider text-gold">3. Dados do(a) Segundo(a) Cônjuge</h4>
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Nome Completo</label>
+                                        <input type="text" id="c2Name" required placeholder="Nome completo" class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Estado Civil Atual</label>
+                                        <select id="c2Estado" class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                            <option value="Solteiro(a)">Solteiro(a)</option>
+                                            <option value="Divorciado(a)">Divorciado(a)</option>
+                                            <option value="Viúvo(a)">Viúvo(a)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Profissão & Naturalidade</label>
+                                        <input type="text" id="c2ProfNat" required placeholder="Profissão / Cidade - UF" class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Nome que Passará a Assinar</label>
+                                        <input type="text" id="c2Sobrenome" required placeholder="Ex: Souza Oliveira" class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4 bg-[#080808] p-6 rounded-2xl border border-[#262626]">
+                                <h4 class="font-bold text-white text-sm uppercase tracking-wider text-gold">4. Contato do Solicitante</h4>
+                                <div>
+                                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">WhatsApp com DDD para Retorno</label>
+                                    <input type="tel" id="whatsappNoivo" required placeholder="(48) 99999-9999" class="w-full px-4 py-3 bg-[#121212] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full bg-gradient-to-r from-gold-light via-gold to-gold-dark hover:opacity-95 text-black font-bold py-4 px-4 rounded-xl transition-all duration-300 shadow-lg btn-glow text-sm uppercase tracking-wider">
+                                ENVIAR DADOS DE HABILITAÇÃO PARA ANÁLISE
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: TABELIONATO DE NOTAS & CHECKLISTS ================= -->
+        <section id="page-tabelionato" class="page-view py-16 lg:py-24">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                    <span class="text-gold uppercase tracking-widest text-xs font-bold block">Serviços Notariais de Confiança & Checklists</span>
+                    <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white">Tabelionato de Notas</h2>
+                    <p class="text-gray-400 text-sm sm:text-base">Atos notariais dotados de fé pública e guias detalhadas para procurações especiais, cadastros de PJ e e-Notariado.</p>
+                </div>
+
+                <!-- Tabs for Tabelionato -->
+                <div class="flex flex-wrap justify-center gap-2 mb-10">
+                    <button onclick="switchNotaryTab('geral')" id="ntab-geral" class="px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider bg-gold text-black transition-all">Atos Notariais</button>
+                    <button onclick="switchNotaryTab('rogo')" id="ntab-rogo" class="px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider glass-card text-gray-300 hover:text-white transition-all">Procuração com Assinante a Rogo</button>
+                    <button onclick="switchNotaryTab('pj')" id="ntab-pj" class="px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider glass-card text-gray-300 hover:text-white transition-all">Cadastro de Pessoa Jurídica</button>
+                    <button onclick="switchNotaryTab('enotariado')" id="ntab-enotariado" class="px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider glass-card text-gray-300 hover:text-white transition-all">Cadastro e-Notariado</button>
+                </div>
+
+                <!-- NOTARY TAB: GERAL -->
+                <div id="notary-content-geral" class="notary-tab-pane space-y-8">
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="glass-card p-6 sm:p-8 rounded-2xl transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center font-bold mb-5 group-hover:bg-gold group-hover:text-black transition-all">
+                                <i class="fa-solid fa-file-contract text-lg"></i>
+                            </div>
+                            <h4 class="text-lg font-heading font-bold text-white mb-2">Escrituras Públicas</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Compra e venda de imóveis, doações, permutas, união estável, divórcio consensual e inventários.</p>
+                        </div>
+
+                        <div class="glass-card p-6 sm:p-8 rounded-2xl transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center font-bold mb-5 group-hover:bg-gold group-hover:text-black transition-all">
+                                <i class="fa-solid fa-pen-nib text-lg"></i>
+                            </div>
+                            <h4 class="text-lg font-heading font-bold text-white mb-2">Reconhecimento de Firma</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Abertura e conferência de cartões de autógrafo por semelhança e por verdadeiro.</p>
+                        </div>
+
+                        <div class="glass-card p-6 sm:p-8 rounded-2xl transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center font-bold mb-5 group-hover:bg-gold group-hover:text-black transition-all">
+                                <i class="fa-solid fa-stamp text-lg"></i>
+                            </div>
+                            <h4 class="text-lg font-heading font-bold text-white mb-2">Autenticação de Cópias</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Conferência e atestação de que cópias reprográficas conferem com os originais.</p>
+                        </div>
+
+                        <div class="glass-card p-6 sm:p-8 rounded-2xl transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center font-bold mb-5 group-hover:bg-gold group-hover:text-black transition-all">
+                                <i class="fa-solid fa-file-signature text-lg"></i>
+                            </div>
+                            <h4 class="text-lg font-heading font-bold text-white mb-2">Procurações Públicas</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Concessão de poderes para representação em negócios, bancos e transações.</p>
+                        </div>
+
+                        <div class="glass-card p-6 sm:p-8 rounded-2xl transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center font-bold mb-5 group-hover:bg-gold group-hover:text-black transition-all">
+                                <i class="fa-solid fa-scroll text-lg"></i>
+                            </div>
+                            <h4 class="text-lg font-heading font-bold text-white mb-2">Ata Notarial</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Constatação oficial de fatos pelo Tabelião para fins de prova pré-constituída em juízo.</p>
+                        </div>
+
+                        <div class="glass-card p-6 sm:p-8 rounded-2xl transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-gold/10 border border-gold/20 text-gold flex items-center justify-center font-bold mb-5 group-hover:bg-gold group-hover:text-black transition-all">
+                                <i class="fa-solid fa-shield-halved text-lg"></i>
+                            </div>
+                            <h4 class="text-lg font-heading font-bold text-white mb-2">Testamentos Públicos</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">Planejamento sucessório seguro com orientação jurídica para última vontade.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOTARY TAB: PROCURAÇÃO COM ASSINANTE A ROGO -->
+                <div id="notary-content-rogo" class="notary-tab-pane hidden space-y-8">
+                    <div class="glass-card p-8 sm:p-10 rounded-3xl border border-gold/30 glow-gold space-y-6">
+                        <div class="flex items-center space-x-4 border-b border-[#262626] pb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gold/15 text-gold flex items-center justify-center font-bold text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-file-pen"></i>
+                            </div>
+                            <div>
+                                <span class="text-gold uppercase tracking-widest text-[11px] font-bold block">Checklist de Atendimento Oficial</span>
+                                <h3 class="text-2xl font-heading font-bold text-white">Procuração com Assinante a Rogo</h3>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            Utilizada quando o outorgante não pode ou não sabe assinar. Abaixo estão os documentos obrigatórios para a instrução prévia do ato.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-3">
+                                <h4 class="font-bold text-gold text-sm uppercase tracking-wider"><i class="fa-solid id-card mr-2"></i> Documentos de Identidade (RG ou CNH)</h4>
+                                <ul class="space-y-2 text-xs sm:text-sm text-gray-300">
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span>Documento de identidade da <strong>pessoa que assinará a rogo</strong> (testemunha/assistente);</span></li>
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span>Documento de identidade de <strong>1 (um) ou mais procuradores</strong>;</span></li>
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span>Documento de identidade do <strong>outorgante</strong>.</span></li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-3">
+                                <h4 class="font-bold text-gold text-sm uppercase tracking-wider"><i class="fa-solid fa-circle-info mr-2"></i> Informações & Avisos Importantes</h4>
+                                <ul class="space-y-2 text-xs sm:text-sm text-gray-300">
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span>Informar endereço completo, profissão e estado civil de todas as partes envolvidas.</span></li>
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-triangle-exclamation text-amber-400 mt-1"></i><span><strong>Atenção:</strong> Este tipo de procuração <strong>não fica pronta no mesmo dia</strong>. A documentação deve ser apresentada com antecedência para conferência e redação.</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOTARY TAB: CADASTRO DE PESSOA JURÍDICA -->
+                <div id="notary-content-pj" class="notary-tab-pane hidden space-y-8">
+                    <div class="glass-card p-8 sm:p-10 rounded-3xl border border-gold/30 glow-gold space-y-6">
+                        <div class="flex items-center space-x-4 border-b border-[#262626] pb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gold/15 text-gold flex items-center justify-center font-bold text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-building"></i>
+                            </div>
+                            <div>
+                                <span class="text-gold uppercase tracking-widest text-[11px] font-bold block">Checklist de Atendimento Oficial</span>
+                                <h3 class="text-2xl font-heading font-bold text-white">Cadastro de Pessoa Jurídica</h3>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            Para abrir ou atualizar o cadastro da empresa no cartório (indispensável para atos notariais envolvendo empresas), apresente a seguinte documentação:
+                        </p>
+
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-3">
+                                <h4 class="font-bold text-gold text-sm">1. Documentos da PJ</h4>
+                                <ul class="space-y-2 text-xs text-gray-300">
+                                    <li>• Comprovante de inscrição e situação no CNPJ;</li>
+                                    <li>• Contrato social, estatuto ou ato constitutivo vigente;</li>
+                                    <li>• Última alteração contratual (com consolidação, se houver);</li>
+                                    <li>• Documento indicando o quadro societário e administradores;</li>
+                                    <li>• Certidão simplificada ou equivalente atualizada.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-3">
+                                <h4 class="font-bold text-gold text-sm">2. Representante Legal</h4>
+                                <ul class="space-y-2 text-xs text-gray-300">
+                                    <li>• Documento oficial com foto e CPF;</li>
+                                    <li>• Comprovante de endereço atualizado;</li>
+                                    <li>• Informar profissão, estado civil, telefone e e-mail.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-3">
+                                <h4 class="font-bold text-gold text-sm">3. Se houver Procurador</h4>
+                                <ul class="space-y-2 text-xs text-gray-300">
+                                    <li>• Procuração válida com poderes específicos para o ato;</li>
+                                    <li>• Documento oficial com foto e CPF do procurador.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOTARY TAB: e-NOTARIADO -->
+                <div id="notary-content-enotariado" class="notary-tab-pane hidden space-y-8">
+                    <div class="glass-card p-8 sm:p-10 rounded-3xl border border-gold/30 glow-gold space-y-6">
+                        <div class="flex items-center space-x-4 border-b border-[#262626] pb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gold/15 text-gold flex items-center justify-center font-bold text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+                            </div>
+                            <div>
+                                <span class="text-gold uppercase tracking-widest text-[11px] font-bold block">Plataforma Nacional Digital</span>
+                                <h3 class="text-2xl font-heading font-bold text-white">Cadastro e-Notariado</h3>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            O e-Notariado permite realizar atos notariais (escrituras, procurações, reconhecimento de firma) de forma totalmente digital, com a mesma validade jurídica do papel.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-3">
+                                <h4 class="font-bold text-gold text-sm uppercase tracking-wider">Documentos Necessários</h4>
+                                <ul class="space-y-2 text-xs sm:text-sm text-gray-300">
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span>Documento de identidade oficial com foto (RG, CNH ou Passaporte);</span></li>
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span>Comprovante de residência atualizado em nome do requerente;</span></li>
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span>Certidão de casamento (se aplicável).</span></li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-[#080808] p-6 rounded-2xl border border-[#262626] space-y-3">
+                                <h4 class="font-bold text-gold text-sm uppercase tracking-wider">Requisitos Obrigatórios</h4>
+                                <ul class="space-y-2 text-xs sm:text-sm text-gray-300">
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span><strong>Celular próprio:</strong> O cliente deve estar com seu próprio smartphone em mãos para validação biométrica e recebimento de códigos.</span></li>
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-check text-gold mt-1"></i><span><strong>E-mail ativo:</strong> Indispensável ter acesso imediato ao e-mail durante o atendimento no cartório.</span></li>
+                                    <li class="flex items-start space-x-2"><i class="fa-solid fa-triangle-exclamation text-amber-400 mt-1"></i><span>Cadastro mediante agendamento prévio.</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 4: SOBRE O CARTÓRIO ================= -->
+        <section id="page-sobre" class="page-view py-16 lg:py-24">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-5 relative">
+                        <div class="relative mx-auto max-w-md rounded-3xl overflow-hidden glass-card p-6 glow-gold border border-gold/30 text-center space-y-6">
+                            <!-- Logo Box with Beige Background -->
+                            <div class="py-8 px-4 bg-[#f4ecd8] rounded-2xl border border-gold/40 flex items-center justify-center shadow-inner">
+                                <img src="logo.png" alt="Logo Oficial Cartório do Distrito de Mirim" class="max-w-[220px] w-full h-auto object-contain filter drop-shadow-sm" onerror="this.src='https://placehold.co/220x80/f4ecd8/121212?text=Cartorio+Mirim'">
+                            </div>
+                            <div class="space-y-1">
+                                <span class="block font-heading font-bold text-white text-lg">Nadja Raquel Guimarães</span>
+                                <span class="block text-xs text-gold font-semibold uppercase tracking-widest">Tabeliã e Registradora</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 space-y-6">
+                        <span class="text-gold uppercase tracking-widest text-xs font-bold block">Página Institucional • Comarca de Imbituba/SC</span>
+                        <h2 class="text-2xl sm:text-3xl font-heading font-extrabold text-white">Tabelionato de Notas e Registro Civil das Pessoas Naturais do Distrito de Mirim</h2>
+                        
+                        <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+                            Nossa serventia atua com rigor legal, transparência e atendimento humanizado na formalização de todos os atos da vida civil e imobiliária. Sob a titularidade da Tabeliã e Registradora <strong>Nadja Raquel Guimarães</strong>, garantimos fé pública e segurança jurídica para a população de Nova Brasília, Mirim, Praia do Rosa, Ibiraquera e demais localidades jurisdicionadas.
+                        </p>
+
+                        <div class="grid sm:grid-cols-2 gap-4 pt-2">
+                            <div class="glass-card p-4 rounded-xl">
+                                <div class="text-gold font-bold text-sm mb-1"><i class="fa-solid fa-award mr-2"></i> Fé Pública</div>
+                                <p class="text-xs text-gray-400">Autenticidade e garantia legal em cada documento.</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl">
+                                <div class="text-gold font-bold text-sm mb-1"><i class="fa-solid fa-hands-holding-child mr-2"></i> Atendimento Humano</div>
+                                <p class="text-xs text-gray-400">Equipe qualificada para orientar cada cidadão com excelência.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 5: CONTATO ================= -->
+        <section id="page-contato" class="page-view py-16 lg:py-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12 space-y-3">
+                    <span class="text-gold uppercase tracking-widest text-xs font-bold block">Fale Conosco</span>
+                    <h2 class="text-3xl sm:text-4xl font-heading font-extrabold text-white">Atendimento e Localização</h2>
+                    <p class="text-gray-400 text-sm">Entre em contato ou visite nossa sede em Imbituba/SC.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="glass-card p-8 rounded-3xl space-y-6 border border-gold/30 glow-gold">
+                        <h3 class="text-xl font-heading font-bold text-white">Informações Oficiais</h3>
+                        <div class="space-y-4 text-sm text-gray-300">
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-solid fa-location-dot text-gold text-lg mt-1"></i>
+                                <div>
+                                    <strong class="block text-white">Endereço:</strong>
+                                    <span>Av. Cônego Itamar Luiz da Costa, nº 773 - Nova Brasília, Imbituba/SC - CEP 88.780-000</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-solid fa-phone text-gold text-lg mt-1"></i>
+                                <div>
+                                    <strong class="block text-white">Telefone / WhatsApp:</strong>
+                                    <span>(48) 3255-6115</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-regular fa-clock text-gold text-lg mt-1"></i>
+                                <div>
+                                    <strong class="block text-white">Horário de Atendimento:</strong>
+                                    <span>Segunda a Sexta-feira, das 9h às 17h</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-3xl space-y-6">
+                        <h3 class="text-xl font-heading font-bold text-white">Envie uma Mensagem</h3>
+                        <form id="contactForm" class="space-y-4" onsubmit="handleContactSubmission(event)">
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Seu Nome</label>
+                                <input type="text" id="cName" required placeholder="Nome completo" class="w-full px-4 py-3 bg-[#080808] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">WhatsApp</label>
+                                <input type="tel" id="cPhone" required placeholder="(48) 99999-9999" class="w-full px-4 py-3 bg-[#080808] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-300 mb-1">Mensagem ou Dúvida</label>
+                                <textarea id="cMsg" required rows="3" placeholder="Escreva sua dúvida sobre certidões ou atos..." class="w-full px-4 py-3 bg-[#080808] border border-[#262626] rounded-xl text-white text-sm focus:border-gold focus:outline-none"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-gold-light via-gold to-gold-dark hover:opacity-95 text-black font-bold py-3.5 px-4 rounded-xl transition-all duration-300 text-sm uppercase tracking-wider">
+                                Enviar Mensagem
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#050505] border-t border-[#262626] py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex items-center justify-center space-x-2 text-gold">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span class="font-heading font-bold text-white text-base">Tabelionato de Notas e RCPN do Distrito de Mirim</span>
+            </div>
+            <p class="text-xs text-gray-400">Comarca de Imbituba/SC • Nadja Raquel Guimarães, Tabeliã e Registradora</p>
+            <p class="text-[11px] text-gray-500">&copy; 2026 Todos os direitos reservados.</p>
+            <div class="flex flex-wrap justify-center gap-6 text-xs text-gray-400 pt-2">
+                <button onclick="switchPage('home')" class="hover:text-gold transition-colors">Início</button>
+                <button onclick="switchPage('rcpn')" class="hover:text-gold transition-colors">RCPN</button>
+                <button onclick="switchPage('tabelionato')" class="hover:text-gold transition-colors">Tabelionato & Checklists</button>
+                <button onclick="switchPage('sobre')" class="hover:text-gold transition-colors">Sobre o Cartório</button>
+                <button onclick="switchPage('contato')" class="hover:text-gold transition-colors">Contato</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md hidden">
+        <div class="glass-card max-w-md w-full p-8 rounded-3xl text-center relative border border-gold/40 glow-gold">
+            <div class="w-16 h-16 bg-gold/15 text-gold rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="text-2xl font-heading font-bold text-white mb-2">Solicitação Recebida!</h3>
+            <p id="confirmationMessage" class="text-sm text-gray-300 mb-6 leading-relaxed">
+                Seus dados foram encaminhados com sucesso para nossa equipe no Distrito de Mirim. Retornaremos em breve.
+            </p>
+            <button onclick="closeModal()" class="w-full bg-gradient-to-r from-gold-light via-gold to-gold-dark hover:opacity-95 text-black font-bold py-3 px-4 rounded-xl transition-all duration-300 text-sm uppercase tracking-wider">
+                Entendido
+            </button>
+        </div>
+    </div>
+
+    <!-- Script Handling SPA, Tabs & Submissions -->
+    <script>
+        function switchPage(pageId) {
+            const pages = document.querySelectorAll('.page-view');
+            pages.forEach(p => p.classList.remove('active'));
+
+            const target = document.getElementById('page-' + pageId);
+            if(target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            const navLinks = ['home', 'rcpn', 'tabelionato', 'sobre', 'contato'];
+            navLinks.forEach(id => {
+                const btn = document.getElementById('nav-' + id);
+                if(btn) {
+                    if(id === pageId) {
+                        btn.className = 'text-gold font-semibold transition-colors';
+                    } else {
+                        btn.className = 'hover:text-gold transition-colors text-gray-300';
+                    }
+                }
+            });
+        }
+
+        function switchRcpnTab(tabName) {
+            const panes = document.querySelectorAll('.rcpn-tab-pane');
+            panes.forEach(p => p.classList.add('hidden'));
+
+            const target = document.getElementById('rcpn-content-' + tabName);
+            if(target) {
+                target.classList.remove('hidden');
+            }
+
+            const tabs = ['casamento', 'religioso', 'nascimento', 'obito', 'formulario'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('rtab-' + t);
+                if(btn) {
+                    if(t === tabName) {
+                        if(t === 'religioso') {
+                            btn.className = 'px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider bg-gold text-black transition-all';
+                        } else {
+                            btn.className = 'px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider bg-gold text-black transition-all';
+                        }
+                    } else {
+                        if(t === 'religioso') {
+                            btn.className = 'px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider glass-card text-gold border border-gold/40 hover:text-white transition-all';
+                        } else {
+                            btn.className = 'px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider glass-card text-gray-300 hover:text-white transition-all';
+                        }
+                    }
+                }
+            });
+        }
+
+        function switchNotaryTab(tabName) {
+            const panes = document.querySelectorAll('.notary-tab-pane');
+            panes.forEach(p => p.classList.add('hidden'));
+
+            const target = document.getElementById('notary-content-' + tabName);
+            if(target) {
+                target.classList.remove('hidden');
+            }
+
+            const tabs = ['geral', 'rogo', 'pj', 'enotariado'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('ntab-' + t);
+                if(btn) {
+                    if(t === tabName) {
+                        btn.className = 'px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider bg-gold text-black transition-all';
+                    } else {
+                        btn.className = 'px-5 py-2.5 rounded-xl text-xs uppercase font-bold tracking-wider glass-card text-gray-300 hover:text-white transition-all';
+                    }
+                }
+            });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('menuIcon');
+            if(menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                menu.classList.add('hidden');
+                icon.className = 'fa-solid fa-bars';
+            }
+        }
+
+        function handleMarriageSubmission(event) {
+            event.preventDefault();
+            const c1 = document.getElementById('c1Name').value;
+            const c2 = document.getElementById('c2Name').value;
+            const wpp = document.getElementById('whatsappNoivo').value;
+
+            document.getElementById('confirmationMessage').innerHTML = `Prezado(a) solicitante, os dados de habilitação de casamento de <strong class="text-white">${c1}</strong> e <strong class="text-white">${c2}</strong> foram protocolados com sucesso. Nossa equipe entrará em contato via WhatsApp (<strong class="text-gold">${wpp}</strong>).`;
+            
+            document.getElementById('successModal').classList.remove('hidden');
+            document.getElementById('marriageForm').reset();
+        }
+
+        function handleContactSubmission(event) {
+            event.preventDefault();
+            const name = document.getElementById('cName').value;
+            document.getElementById('confirmationMessage').innerHTML = `Obrigado, <strong class="text-white">${name}</strong>! Sua mensagem foi enviada ao Tabelionato e Registro Civil do Distrito de Mirim.`;
+            document.getElementById('successModal').classList.remove('hidden');
+            document.getElementById('contactForm').reset();
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            switchPage('home');
+        }
+    </script>
+</body>
+</html>
